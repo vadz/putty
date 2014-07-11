@@ -3268,6 +3268,19 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message,
 	if (process_clipdata((HGLOBAL)lParam, wParam))
 	    term_do_paste(term);
 	return 0;
+      case WM_POWERBROADCAST:
+	switch (wParam) {
+	    case PBT_APMSUSPEND:
+		logevent(NULL, "----- Disconnecting on suspend -----");
+		close_session(NULL);
+		break;
+	    case PBT_APMRESUMESUSPEND:
+		logevent(NULL, "----- Resuming session after suspend -----");
+		Sleep(5000);
+		start_backend();
+		break;
+	}
+	break;
       default:
 	if (message == wm_mousewheel || message == WM_MOUSEWHEEL) {
 	    int shift_pressed=0, control_pressed=0;
